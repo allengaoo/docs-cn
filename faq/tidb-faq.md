@@ -105,6 +105,9 @@ MySQL 是单机数据库，只能通过 XA 来满足跨数据库事务，而 TiD
 
 是的，TiFlash 默认保持数据强一致性。
 
+### flashback cluster 和 PiTR，TiCDC是否兼容？
+是的，flashback cluster 特性和PiTR， TiCDC 是兼容的。当上游集群运行flashback cluster 命令后，下游的TiCDC 会自动忽略这个命令，而对于flashbackup 之后上游产生的 DML 语句，TiCDC 会正常向下游系统进行同步。如果用户使用 TiCDC 作为容灾方案时，用户需要在上游运行过flashback cluster 之后，手动在下游tidb 集群运行flashbackup cluster或其他手工操作来确保上下游数据一致；如果下游系统不是TiDB 集群，但是也需要和上游系统数据保持一致时，用户也需要在下游系统进行操作来确保上下游数据一致。 对于 PiTR，我们会记录flashback cluster 这个命令，并在恢复的时候也将这个命令恢复到目标集群。
+
 ## 1.2 TiDB 原理
 
 ### 1.2.1 存储 TiKV 详细解读
